@@ -7,10 +7,16 @@ GO_TARBALL = /tmp/go_dist.tgz
 GO_ROOT = $(CWD)/go_dist
 GO_PROJECT = $(CWD)/go_project
 GO_PROJECT_NAME = calibrefs
-GO_PROJECT_DIR = $(GO_PROJECT)/go/src/github.com/AitorAtuin
-GO_PROJECT_BUILD_DIR = $(GO_PROJECT_DIR)
-GO_PROJECT_RELPATH = $(shell realpath $(CWD) --relative-to $(GO_PROJECT_BUILD_DIR))
-PUSHD = $(shell which pushd)
+GO = $(GO_ROOT)/go/bin/go
+
+all: go_dist calibrefs
+
+calibrefs_deps:
+	@GOPATH=$(PWD) GOROOT=$(GO_ROOT)/go $(GO) get github.com/rminnich/go9p
+
+calibrefs: calibrefs_deps
+	@echo "Building calibrefs"
+	@GOPATH=$(PWD) GOROOT=$(GO_ROOT)/go $(GO) install calibrefs
 
 go_dist:
 	@echo "Getting go binaries"
@@ -18,11 +24,11 @@ go_dist:
 	@mkdir -p $(GO_ROOT)
 	@echo "Uncompressing go binaries"
 	@$(TAR) zxvf $(GO_TARBALL) -C $(GO_ROOT)
-	@mkdir -p $(GO_PROJECT_BUILD_DIR)
-	@echo "Linking project $(GO_PROJECT_BUILD_DIR) -> $(CWD)"
-	@ln -s $(CWD) $(GO_PROJECT_BUILD_DIR)/$(GO_PROJECT_NAME)
 
-clean:
+clean_go:
 	@$(RM) -rf $(GO_ROOT)
-	@$(RM) -rf $(GO_PROJECT)
-	@$(RM) -rf $(ARTIFACTS_DIR)
+
+clean_project:
+	@$(RM) -rf bin
+
+clean: clean_go  clean_project
