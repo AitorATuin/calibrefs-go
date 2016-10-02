@@ -7,16 +7,16 @@ GO_TARBALL = /tmp/go_dist.tgz
 GO_ROOT = $(CWD)/go_dist
 GO_PROJECT = $(CWD)/go_project
 GO_PROJECT_NAME = calibrefs
-GO = $(GO_ROOT)/go/bin/go
+GO = `which go`
 
-all: go_dist calibrefs
+all: calibrefs
 
 calibrefs_deps:
-	@GOPATH=$(PWD) GOROOT=$(GO_ROOT)/go $(GO) get github.com/rminnich/go9p
+	@$(GO) get github.com/rminnich/go9p
 
 calibrefs: calibrefs_deps
 	@echo "Building calibrefs"
-	@GOPATH=$(PWD) GOROOT=$(GO_ROOT)/go $(GO) install calibrefs
+	@$(GO) install calibrefs
 
 go_dist:
 	@echo "Getting go binaries"
@@ -31,4 +31,4 @@ clean_go:
 clean_project:
 	@$(RM) -rf bin
 
-clean: clean_go  clean_project
+clean: clean_project
