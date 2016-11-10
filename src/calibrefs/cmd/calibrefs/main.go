@@ -1,10 +1,20 @@
 package main
 
-import "fmt"
-import "github.com/AitorATuin/calibrefs"
+import (
+	"fmt"
+
+	"github.com/AitorATuin/calibrefs"
+	"github.com/juju/loggo"
+)
 
 func main() {
+	calibrefs.SetLogLevel(loggo.DEBUG)
 	calibrefsSrv := calibrefs.NewCalibreFS()
-	fmt.Println("Starting calibrefs server ...")
-	calibrefsSrv.StartNetListener("tcp", "127.0.0.1")
+	calibrefsSrv.Start(calibrefsSrv)
+	calibrefsSrv.Debuglevel = 10
+	calibrefs.Logger.Infof("Starting calibrefs server")
+	err := calibrefsSrv.StartNetListener("tcp", "127.0.0.1:5640")
+	if err != nil {
+		fmt.Printf("ERROR: %s\n", err)
+	}
 }

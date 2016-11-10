@@ -2,7 +2,6 @@ package calibrefs
 
 import (
 	"fmt"
-	"net"
 
 	uuid "github.com/nu7hatch/gouuid"
 	"github.com/rminnich/go9p"
@@ -37,22 +36,6 @@ func NewCalibreFS() *CalibreFS {
 	}
 
 	return calibrefs
-}
-
-func (calibrefs *CalibreFS) StartNetListener(ntype, addr string) error {
-	l, err := net.Listen(ntype, addr)
-	if err != nil {
-		return fmt.Errorf("Unable to start NetListener: %s", err.Error())
-	}
-
-	for {
-		c, err := l.Accept()
-		if err != nil {
-			return fmt.Errorf("Unable to handle incoming connection: %s", err.Error())
-		}
-
-		calibrefs.NewConn(c)
-	}
 }
 
 func (calibrefs *CalibreFS) NameByEntry(entry uint8) (entryName *string, err error) {
