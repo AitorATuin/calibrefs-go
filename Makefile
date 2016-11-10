@@ -8,11 +8,12 @@ GO_ROOT = $(CWD)/go_dist
 GO_PROJECT = $(CWD)/go_project
 GO_PROJECT_NAME = calibrefs
 GO = `which go`
+CALIBREFS_DEPS=github.com/rminnich/go9p github.com/nu7hatch/gouuid github.com/juju/loggo
 
 all: calibrefs
 
 calibrefs_deps:
-	@$(GO) get github.com/rminnich/go9p
+	$(foreach CALIBREFS_DEP,$(CALIBREFS_DEPS),$(GO) get $(CALIBREFS_DEP);)
 
 calibrefs: calibrefs_deps
 	@echo "Building calibrefs"
